@@ -1,0 +1,3 @@
+portainer_domain: portainer.local.example.com
+
+swarmfile_dir: /swarm
