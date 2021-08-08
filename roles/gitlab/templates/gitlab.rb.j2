@@ -1,0 +1,47 @@
+external_url 'https://{{ gitlab_domain }}/'
+nginx['listen_port'] = 8443
+nginx['listen_https'] = false
+letsencrypt['enable'] = false
+gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_password')
+prometheus['listen_address'] = '0.0.0.0:9090'
+
+registry_external_url 'https://{{ gitlab_registry_domain }}'
+gitlab_rails['registry_enabled'] = true
+gitlab_rails['api_url'] = 'https://{{ gitlab_registry_domain }}'
+registry['enable'] = true
+registry_nginx['enable'] = false
+registry['registry_http_addr'] = "0.0.0.0:5000"
+
+gitlab_rails['omniauth_providers'] = [
+{% if gitlab_omniauth_azuread_enabled %}
+  {
+    "name" => "azure_activedirectory_v2",
+    "args" => {
+      "client_id" => "{{ gitlab_az_app_client_id }}",
+      "client_secret" => "{{ gitlab_az_app_client_secret }}",
+      "tenant_id" => "{{ gitlab_az_app_tenant_id }}",
+    }
+  }
+{% endif %}
+{{ ", " if gitlab_omniauth_azuread_enabled and omniauth_keycloak_enabled else "" }}
+{% if gitlab_omniauth_keycloak_enabled %}
+  {
+    'name' => 'openid_connect',
+    'label' => 'Keycloak',
+    'args' => {
+      'name' => 'openid_connect',
+      'scope' => ['openid', 'profile', 'email'],
+      'response_type' => 'code',
+      'issuer' =>  '{{ gitlab_keycloak_realm }}',
+      'client_auth_method' => 'query',
+      'discovery' => true,
+      'uid_field' => 'preferred_username',
+      'client_options' => {
+        'identifier' => '{{ gitlab_keycloak_client_id }}',
+        'secret' => '{{ gitlab_keycloak_client_secret }}',
+        'redirect_uri' => '{{ gitlab_redirect_uri }}'
+      }
+    }
+  }
+{% endif %}
+]
