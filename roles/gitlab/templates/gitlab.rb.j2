@@ -23,7 +23,7 @@ gitlab_rails['omniauth_providers'] = [
     }
   }
 {% endif %}
-{{ ", " if gitlab_omniauth_azuread_enabled and omniauth_keycloak_enabled else "" }}
+{{ ", " if gitlab_omniauth_azuread_enabled and gitlab_omniauth_keycloak_enabled else "" }}
 {% if gitlab_omniauth_keycloak_enabled %}
   {
     'name' => 'openid_connect',
@@ -45,3 +45,42 @@ gitlab_rails['omniauth_providers'] = [
   }
 {% endif %}
 ]
+
+{% if gitlab_omniauth_ldap_enabled %}
+gitlab_rails['ldap_enabled'] = true
+gitlab_rails['prevent_ldap_sign_in'] = false
+gitlab_rails['ldap_servers'] = {
+'main' => {
+  'label' => 'LDAP',
+  'host' =>  '{{ gitlab_ldap_server }}',
+  'port' => 389,
+  'uid' => 'sAMAccountName',
+  'encryption' => 'simple_tls',
+  'verify_certificates' => true,
+  'bind_dn' => '{{ gitlab_ldap_bind_dn }}',
+  'password' => '{{ gitlab_ldap_bind_pw }}',
+  'verify_certificates' => true,
+  'tls_options' => {
+    'ca_file' => '',
+    'ssl_version' => '',
+    'ciphers' => '',
+    'cert' => '',
+    'key' => ''
+  },
+  'timeout' => 10,
+  'active_directory' => true,
+  'allow_username_or_email_login' => false,
+  'block_auto_created_users' => false,
+  'base' => 'dc=example,dc=com',
+  'user_filter' => '',
+  'attributes' => {
+    'username' => ['uid', 'userid', 'sAMAccountName'],
+    'email' => ['mail', 'email', 'userPrincipalName'],
+    'name' => 'cn',
+    'first_name' => 'givenName',
+    'last_name' => 'sn'
+  },
+  'lowercase_usernames' => false,
+  }
+}
+{% endif %}

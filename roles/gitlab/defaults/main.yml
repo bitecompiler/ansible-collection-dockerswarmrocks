@@ -13,7 +13,7 @@ gitlab_keycloak_realm: https://keycloak.example.com/auth/realms/myrealm
 gitlab_keycloak_client_id: CLIENT_ID
 gitlab_keycloak_client_secret: CLIENT_SECRET
 
-gitlab_auth_ldap_enabled: false
+gitlab_omniauth_ldap_enabled: false
 gitlab_ldap_server: ldap.example.com
 gitlab_ldap_bind_dn: LDAP_BIND_DN
 gitlab_ldap_bind_pw: LDAP_BIND_PW
