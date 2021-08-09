@@ -118,6 +118,6 @@ networks:
 
 secrets:
 {% for cred in le_dns_auth.credentials %}
-  {{ cred.name }}
+  {{ cred.name }}:
     external: true
 {% endfor %}
