@@ -103,9 +103,8 @@ services:
     {% endfor %}
 environment:
   {% for cred in le_dns_auth.credentials %}
-    - {{ cred.name|upper }}{{ "_FILE" if cred.as_file else "" }}={% if cred.as_file %}/run/secrets/{{ cred.name }}{% else %}{{ cred.value }}
-{% endif %}
-{% endfor %}
+    - {{ cred.name|upper }}{{ "_FILE" if cred.as_file else "" }}={% if cred.as_file %}/run/secrets/{{ cred.name }}{% else %}{{ cred.value }}{% endif %}
+  {% endfor %}
 
 volumes:
   # Create a volume to store the certificates, there is a constraint to make sure
