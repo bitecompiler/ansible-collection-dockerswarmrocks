@@ -58,6 +58,7 @@
     data: "{{ item.value }}"
     state: present
   loop: "{{ le_dns_auth.credentials }}"
+  when: le_dns_auth is defined
   no_log: true
   tags:
   - secrets
