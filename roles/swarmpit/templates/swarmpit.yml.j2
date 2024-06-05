@@ -53,7 +53,7 @@ services:
         constraints:
           - node.labels.swarmpit.db-data == true
   influxdb:
-    image: influxdb:1.7
+    image: influxdb:1.8
     volumes:
       - influx-data:/var/lib/influxdb
     networks:
@@ -79,6 +79,8 @@ services:
       - net
     deploy:
       mode: global
+      labels:
+        swarmpit.agent: 'true'
       resources:
         limits:
           cpus: '0.10'
